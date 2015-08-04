@@ -87,6 +87,7 @@
               [(== h [:dry nsize]) (!= size nsize) (limito r size limited)]
               ))]))
 
+#_
 (time
   (pprint
     (run 1 [acts rs]
