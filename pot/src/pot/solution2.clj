@@ -13,6 +13,7 @@
 
 (defne poto [coll size]
        ([[have slot] _]
+         (fd/in have (fd/interval 6))
          (fd/+ have slot size)))
 
 (defne pour-outo [before delta after]                       ; [4 1] 4 [0 5], [4 1] 1 [3 2]
@@ -30,7 +31,7 @@
        ([_ _ [a-remain _] [_ b-slot]]
          (conde
            [(== a-remain 0)]
-           [(== b-slot 0)])
+           [(== b-slot 0) (!= a-remain 0)])
          (fresh [delta]
                 (pour-outo a delta A)
                 (pour-outo B delta b))))
@@ -64,3 +65,36 @@
            [(firsto q [0 6])] [(firsto q [6 0])])
          (appendo (lvar) [[3 (lvar)]] q)
          (iterateo exchangeo q))))
+
+;([5 0] [5 1] [4 1] [4 2] [3 2])
+
+;[5 0] [0 5] (5 0) [4 1]       [0 5] (5 0) [3 2]
+;(0 6) [5 1]       [6 0] (0 6) [4 2]       [6 0]
+
+#_(defne acto [p5 p6 act P5 P6]
+         ([_ _ :fill-5 [5 0] _]
+           (poto p6 6) (== p6 P6)
+           (poto p5 5) (!= p5 P5))
+         ([_ _ :fill-6 _ [6 0]]
+           (poto p5 5) (== p5 P5)
+           (poto p6 6) (!= p6 P6))
+         ([_ _ :dump-5 [0 5] _]
+           (poto p5 5) (!= p5 P5)
+           (poto p6 6) (== p6 P6))
+         ([_ _ :dump-6 _ [0 6]]
+           (poto p5 5) (== p5 P5)
+           (poto p6 6) (!= p6 P6))
+         ([_ _ :from5to6 _ _]
+           (poto p5 5) (poto p6 6)
+           (pouro p5 p6 P5 P6))
+         ([_ _ :from6to5 _ _]
+           (poto p5 5) (poto p6 6)
+           (pouro p6 p5 P6 P5)))
+
+#_(defne multi-acto [p5 p6 acts P5 P6]
+         ([_ _ [] p5 p6])
+         ([_ _ [head-act . tail-act] _ _]
+           (fresh [m5 m6]
+                  (acto p5 p6 head-act m5 m6)
+                  (multi-acto m5 m6 tail-act P5 P6))))
+
