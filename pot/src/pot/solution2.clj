@@ -15,7 +15,7 @@
        ([[have slot] _]
          (fd/+ have slot size)))
 
-(defne pour-outo [before delta after]                  ; [4 1] 4 [0 5], [4 1] 1 [3 2]
+(defne pour-outo [before delta after]                       ; [4 1] 4 [0 5], [4 1] 1 [3 2]
        ([[has slot] _ [have inc-slot]]
          (!= delta 0)
          (fd/+ slot delta inc-slot)
@@ -35,8 +35,8 @@
                 (pour-outo a delta A)
                 (pour-outo B delta b))))
 
-(defne infero [need precondition]
-       ([[have slot] _]
+(defne exchangeo [precondition need]
+       ([_ [have slot]]
          (fresh [pot2]
                 (conde
                   [(fd/+ have slot 5) (poto pot2 6)]
@@ -46,5 +46,21 @@
                   [(pouro precondition [0 (lvar)] pot2 need)])
                 )))
 
-(run 3 [q]
-     (infero [5 1] q))
+(defne iterateo [fo coll]
+       ([_ [a b]]
+         (fo a b))
+       ([_ [a . tail]]
+         (fresh [b]
+                (firsto tail b)
+                (fo a b)
+                (iterateo fo tail))))
+
+(time
+  (pprint
+    (run 1 [q]
+         (distincto q)
+         (conde
+           [(firsto q [0 5])] [(firsto q [5 0])]
+           [(firsto q [0 6])] [(firsto q [6 0])])
+         (appendo (lvar) [[3 (lvar)]] q)
+         (iterateo exchangeo q))))
