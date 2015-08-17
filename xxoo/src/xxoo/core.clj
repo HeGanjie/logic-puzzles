@@ -7,6 +7,8 @@
   (:require [clojure.math.combinatorics :as combo])
   (:gen-class))
 
+; http://neverstopbuilding.com/minimax
+
 (defn -main [& args]
   )
 
